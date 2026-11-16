@@ -1,60 +1,23 @@
-# Compatibility Name
+# Avalonia
 
-Compatibility description for SigmaOS.
+Avalonia is a SigmaOS component providing a functional domain model for `avalonia` with validated state, deterministic storage, and typed errors.
 
-## Overview
+## Description
 
-This component provides $tool_name compatibility for SigmaOS operating system.
+Avalonia platform compatibility layer for SigmaOS
 
-## Features
+## Domain model
 
-- Package management compatibility
-- Service management compatibility
-- Desktop environment integration
-- Configuration management
+- `Compatibility` — domain entity
 
-## Architecture
+## API
 
-The component follows SigmaOS architecture principles:
-- Clear abstraction and encapsulation
-- Single responsibility
-- Secure defaults
-- Comprehensive logging
-- Memory safety
-
-## Usage
-
-```rust
-use sigmaos_compat::Compatibility;
-
-#[tokio::main]
-async fn main() -> anyhow::Result<()> {
-    let mut compat = Compatibility::new()?;
-    compat.init().await?;
-    Ok(())
-}
-```
-
-## Building
-
-```bash
-cargo build --release
-```
+- `new()`
 
 ## Testing
 
-```bash
+```sh
 cargo test
 ```
 
-## Security
-
-This component follows SigmaOS security principles:
-- No secrets or API keys in code
-- Secure defaults
-- Environment variable support for sensitive data
-- Comprehensive error handling
-
-## License
-
-MIT License - see LICENSE file for details
+Tests are deterministic, isolated, and self-validating.
