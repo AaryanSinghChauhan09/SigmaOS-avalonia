@@ -3,7 +3,7 @@ name = "SigmaOS-avalonia"
 tier = 2
 stability = "scaffold"
 language = "rust"
-description = "avalonia component"
+description = "Avalonia platform compatibility layer for SigmaOS"
 upstream = []
 
 [contract]
