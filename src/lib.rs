@@ -1,80 +1,131 @@
-//! SigmaOS Avalonia Compatibility Layer
-//!
-//! Avalonia compatibility for SigmaOS
-//! Provides compatibility and integration
-
+//! SigmaOS-avalonia — avalonia component for SigmaOS
 #![forbid(unsafe_code)]
+#![warn(missing_docs)]
 
-use anyhow::Result;
-use log::{debug, error, info, warn};
-use std::sync::Arc;
-use tokio::sync::RwLock;
+use thiserror::Error;
 
-pub mod package;
-pub mod configuration;
-pub mod services;
-pub mod desktop;
-pub mod error;
-pub mod config;
-
-pub use package::*;
-pub use configuration::*;
-pub use services::*;
-pub use desktop::*;
-pub use error::*;
-pub use config::*;
-
-/// Compatibility layer
-pub struct Compatibility {
-    pub config: CompatibilityConfig,
-    pub package_manager: Arc<RwLock<PackageManager>>,
-    pub service_manager: Arc<RwLock<ServiceManager>>,
+/// Error types for this component.
+#[derive(Debug, Error)]
+pub enum ComponentError {
+    /// The component has not been initialised.
+    #[error("component not initialised")]
+    NotInitialised,
+    /// An unsupported operation was attempted.
+    #[error("unsupported operation: {0}")]
+    Unsupported(&'static str),
 }
 
-impl Compatibility {
-    /// Create new compatibility instance
-    pub fn new() -> Result<Self> {
-        info!("Initializing SigmaOS Avalonia compatibility");
-        let config = CompatibilityConfig::load_default()?;
-        debug!("Loaded compatibility configuration");
-        
-        let package_manager = Arc::new(RwLock::new(PackageManager::new(config.clone())?));
-        let service_manager = Arc::new(RwLock::new(ServiceManager::new(config.clone())?));
-        
-        Ok(Self {
-            config,
-            package_manager,
-            service_manager,
-        })
+/// Convenience result type.
+pub type ComponentResult<T> = Result<T, ComponentError>;
+
+/// Core component struct for avalonia.
+#[derive(Debug, Default, Clone)]
+pub struct Component {
+    initialised: bool,
+    name: String,
+}
+
+impl Component {
+    /// Create a new, uninitialised component.
+    pub fn new() -> Self {
+        Self {
+            initialised: false,
+            name: String::from("avalonia"),
+        }
     }
 
-    /// Initialize compatibility
-    pub async fn init(&mut self) -> Result<()> {
-        info!("Starting compatibility initialization");
-        
-        let mut package_manager = self.package_manager.write().await;
-        package_manager.init().await?;
-        debug!("Package manager initialized");
-        
-        let mut service_manager = self.service_manager.write().await;
-        service_manager.init().await?;
-        debug!("Service manager initialized");
-        
-        info!("Compatibility initialization complete");
+    /// Initialise the component.
+    pub fn init(&mut self) -> ComponentResult<()> {
+        self.initialised = true;
         Ok(())
     }
 
-    /// Shutdown compatibility
-    pub async fn shutdown(&mut self) -> Result<()> {
-        info!("Shutting down compatibility");
-        
-        let mut package_manager = self.package_manager.write().await;
-        package_manager.shutdown().await?;
-        
-        let mut service_manager = self.service_manager.write().await;
-        service_manager.shutdown().await?;
-        
-        info!("Compatibility shutdown complete");
+    /// Returns true if the component has been initialised.
+    pub fn is_ready(&self) -> bool {
+        self.initialised
+    }
+
+    /// Execute the component's primary operation.
+    pub fn run(&self) -> ComponentResult<()> {
+        if !self.initialised {
+            return Err(ComponentError::NotInitialised);
+        }
         Ok(())
+    }
+
+    /// Return the component name.
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+
+    /// Reset the component to uninitialised state.
+    pub fn reset(&mut self) {
+        self.initialised = false;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_new_not_ready_aaa() {
+        // Arrange + Act
+        let c = Component::new();
+        // Assert
+        assert!(!c.is_ready());
+    }
+
+    #[test]
+    fn test_init_makes_ready_aaa() {
+        // Arrange
+        let mut c = Component::new();
+        // Act
+        c.init().unwrap();
+        // Assert
+        assert!(c.is_ready());
+    }
+
+    #[test]
+    fn test_run_before_init_fails_aaa() {
+        // Arrange
+        let c = Component::new();
+        // Act
+        let result = c.run();
+        // Assert
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_run_after_init_succeeds_aaa() {
+        // Arrange
+        let mut c = Component::new();
+        c.init().unwrap();
+        // Act
+        let result = c.run();
+        // Assert
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_reset_clears_init_aaa() {
+        // Arrange
+        let mut c = Component::new();
+        c.init().unwrap();
+        assert!(c.is_ready());
+        // Act
+        c.reset();
+        // Assert
+        assert!(!c.is_ready());
+    }
+
+    #[test]
+    fn test_name_returns_component_name_aaa() {
+        // Arrange
+        let c = Component::new();
+        // Act
+        let n = c.name();
+        // Assert
+        assert!(!n.is_empty());
     }
 }
