@@ -11,3 +11,13 @@ sigmaos-avalonia --help
 
 ## License
 GPL-3.0-or-later
+
+## See Also
+
+Related SigmaOS **platform** repositories:
+
+- [SigmaOS-compose-multiplatform](../SigmaOS-compose-multiplatform/README.md) — Compose Multiplatform declarative UI runtime for SigmaOS
+- [SigmaOS-electron](../SigmaOS-electron/README.md) — Electron desktop web application runtime for SigmaOS
+- [SigmaOS-elm-ui](../SigmaOS-elm-ui/README.md) — Elm UI declarative layout engine integration for SigmaOS
+- [SigmaOS-flet](../SigmaOS-flet/README.md) — Flet Python Flutter UI framework integration for SigmaOS
+- [SigmaOS-flutter](../SigmaOS-flutter/README.md) — Flutter desktop and embedded UI runtime for SigmaOS
