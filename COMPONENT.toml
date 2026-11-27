@@ -1,0 +1,5 @@
+[component]
+name = "SigmaOS-avalonia"
+version = "0.1.0"
+category = "platform"
+description = "Avalonia UI cross-platform .NET GUI integration for SigmaOS"
